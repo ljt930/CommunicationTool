@@ -14,6 +14,7 @@ from UI.UI_networkmain import Ui_MainWindow
 from TrasitionBase.CharactersConversion import CharactersConversion
 import TCPServer,TCPClient,UDPServer,UDPClient
 
+
 # 修改默认编码为"utf-8"
 default_encoding = "utf-8"
 if (default_encoding != sys.getdefaultencoding()):
@@ -42,14 +43,14 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
                      self, QtCore.SLOT("start()"))
         self.connect(self.pushButton_client, QtCore.SIGNAL("clicked()"),
                      self, QtCore.SLOT("stop()"))
-        self.connect(self.pushButton_send, QtCore.SIGNAL("clicked()"),
-                     self, QtCore.SLOT("sendmsg()"))
-        self.connect(self.pushButton_test, QtCore.SIGNAL("clicked()"),
-                     self, QtCore.SLOT("testnet()"))
-        self.connect(self.pushButton_clear_recv, QtCore.SIGNAL("clicked()"),
-                     self, QtCore.SLOT("clearrecv()"))
-        self.connect(self.pushButton_clear_send, QtCore.SIGNAL("clicked()"),
-                     self, QtCore.SLOT("clearsend()"))
+        # self.connect(self.pushButton_send, QtCore.SIGNAL("clicked()"),
+        #              self, QtCore.SLOT("sendmsg()"))
+        # self.connect(self.pushButton_test, QtCore.SIGNAL("clicked()"),
+        #              self, QtCore.SLOT("testnet()"))
+        # self.connect(self.pushButton_clear_recv, QtCore.SIGNAL("clicked()"),
+        #              self, QtCore.SLOT("clearrecv()"))
+        # self.connect(self.pushButton_clear_send, QtCore.SIGNAL("clicked()"),
+        #              self, QtCore.SLOT("clearsend()"))
         # self.connect(self.comboBox_net,QtCore.SLOT("currentIndexChanged()"),self, QtCore.SLOT("combobox_change()"))
         self.comboBox_net.currentIndexChanged.connect(self.createSocket)
         # self.checkBox_ishex_recv.stateChanged.connect(self.sethexrecvshow)
@@ -65,16 +66,21 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
         if self.comboBox_net.currentIndex() == 3:
             self._channel = UDPClient.UDPClient()
 
-        # self.connect(self._channel, QtCore.SIGNAL("signal_show_stat"),self.show_stat)
-        # self.connect(self._channel, QtCore.SIGNAL("signal_write_msg"), self.show_revc_msg)
+        self.connect(self._channel, QtCore.SIGNAL("signal_show_stat"),self.show_stat)
+        self.connect(self._channel, QtCore.SIGNAL("signal_write_msg"), self.show_revc_msg)
         # self.connect(self._channel, QtCore.SIGNAL("signal_show_stat"), self.showstat)
         # self._channel.setAddress("",12345)
         # self._channel.open()
 
     @QtCore.pyqtSlot()
     def start(self):
-        self._channel.setAddress("", 12345)
+        self._channel.setAddress("127.0.0.1", 3344)
         self._channel.open()
+
+    @QtCore.pyqtSlot()
+    def stop(self):
+        # self._channel.setAddress("", 12345)
+        self._channel.close()
 
     def show_stat(self,msg):
 

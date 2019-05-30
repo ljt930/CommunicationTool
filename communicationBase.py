@@ -5,12 +5,14 @@
 # @Site    : 
 # @File    : communicationBase.py
 # @Software: PyCharm
+import socket
 
 class communicationBase():
     def __init__(self):
 
 
         print ("init:communicationBase")
+        self._socket = socket
         self._isBondLocalAddr = False #客户端，指定本地端口发送
 
         self._isHexSend = False

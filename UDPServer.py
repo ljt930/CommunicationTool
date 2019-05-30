@@ -23,9 +23,7 @@ class UDPServer(QtCore.QThread, communicationBase):
         communicationBase.__init__(self)
 
         self.client_socket_list = list()
-        self._socket = None
-        self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self._socket.settimeout(3)
+        self.socket = None
 
 
 
@@ -48,12 +46,14 @@ class UDPServer(QtCore.QThread, communicationBase):
         :return:
         """
         print "UDPServer::open"
+        self.socket = self._socket.socket(self._socket.AF_INET, self._socket.SOCK_DGRAM)
+        self.socket.settimeout(3)
 
         try:
             # port = int(self.lineEdit_port.text())
             self.address = (self._ip, self._port)
             print self.address
-            self._socket.bind(self.address)
+            self.socket.bind(self.address)
         except Exception as ret:
             print ret
             msg = "请检查：%s"%(ret)
@@ -61,8 +61,8 @@ class UDPServer(QtCore.QThread, communicationBase):
 
         else:
             self.link = True
-            self._socket_th = threading.Thread(target=self.udp_server_concurrency)
-            self._socket_th.start()
+            self.socket_th = threading.Thread(target=self.udp_server_concurrency)
+            self.socket_th.start()
             msg = "UDP服务端正在监听端口:%s" %(self._port)
             self.emit(QtCore.SIGNAL("signal_show_stat"), msg)
 
