@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : CharactersConversion.py
 # @Software: PyCharm
-
+import struct
 class CharactersConversion():
     def QString2PyString(self, qStr):
         # # QString，如果内容是中文，则直接使用会有问题，要转换成 python string
@@ -20,6 +20,16 @@ class CharactersConversion():
         else:
             i = 0
         return i
+    def QStringToFloat(self, qStr):
+        i_tmp = qStr.toInt()
+        ##example :tupe (int ,bool)
+        if i_tmp[1]:
+            i = i_tmp[0]
+        else:
+            i = 0
+
+        return float(i)
+
     def StrToBool(self,str): #字符转bool
         if str.lower() == "true":
             return True
@@ -33,5 +43,75 @@ class CharactersConversion():
         else:
             return "0"
 
+    def encode_to_hex(self,data):
+        """
+        功能：把unicode编码字符字符编码成“hex”编码字符串,每两位用空格分割.
+        配合：encode_to_hex_yield使用，
+        :param s:
+        :return:
+        """
+        # return ' '.join([(hex(ord(c)).replace('0x', '')) for c in data])
+        return " ".join(self.encode_to_hex_yield(data))
+
+    def encode_to_hex_yield(self,data):
+        """
+        功能：每两位为一组，补足两位补0
+        :param data:
+        :return:
+        """
+        for c in data:
+            s = hex(ord(c)).replace('0x', '')
+            if len(s)<2:
+                s = "0"+s
+            yield s
+
+    def decode_to_hex(self,data):
+        """
+        功能：把“hex”的编码类型，解码成unicode编码字符串字符串，每两位为一组，不足两位用0补足
+        :param data:
+        :return: str
+        """
+        ##功能有限，暂时屏蔽
+        # return ''.join([chr(i) for i in [int(b, 16) for b in s.split(' ')]])
+
+        str = ""
+        for d in data.split(" "):
+            while d:
+                if len(d) < 2:
+                    str_t = "0"+d
+                else:
+                    str_t = d[0:2]
+                s = int(str_t, 16)
+                str += struct.pack('B', s)
+                d = d[2:]
+        return str
+
+    def str_to_bin(self,s):
+        """
+        暂未仔细测试
+        :param s:
+        :return:
+        """
+        return ' '.join([bin(ord(c)).replace('0b', '') for c in s])
+
+    def bin_to_str(self,s):
+        """
+        暂未仔细测试
+        :param s:
+        :return:
+        """
+        return ''.join([chr(i) for i in [int(b, 2) for b in s.split(' ')]])
+
+
 if __name__ == '__main__':
-    b =False
+    ddd = "02020202"
+
+    cc = CharactersConversion()
+    qq =  cc.decode_to_hex(ddd)
+    print qq
+    zz = cc.encode_to_hex(qq)
+    print zz
+    for c in qq:
+        oc = ord(c)
+        hc = hex(oc)
+        print hc
