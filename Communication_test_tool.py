@@ -309,7 +309,7 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
 
         # self.checkbox_test()
 
-        print "auto_send:::!2313"
+        # print "auto_send:::!2313"
 
     def checkbox_test(self):
         print self.checkBox_auotsend.nextCheckState()

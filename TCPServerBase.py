@@ -53,14 +53,18 @@ class TCPServerBase(communicationBase):
     def tcp_server_concurrency(self):
         """
         功能函数，供创建线程的方法；
-        使用子线程用于监听并创建连接，使主线程可以继续运行，以免无响应
-        使用非阻塞式并发用于接收客户端消息，减少系统资源浪费，使软件轻量化
+        ，使主线程可以继续运行，以免无响应
+        使用非阻塞式并发用于接收客使用子线程用于监听并创建连接户端消息，减少系统资源浪费，使软件轻量化
         :return:None
         """
+
         while True:
             try:
                 client_socket, client_address = self.socket.accept()
+                print "accept"
             except Exception as ret:
+                print ret
+                break
                 # if self._isDebug:
                 #     print ret
                 pass
@@ -89,6 +93,7 @@ class TCPServerBase(communicationBase):
         while True:
             try:
                 recv_msg = client.recv(1024)
+                print "recv"
             except Exception as ret:
                 if 9 == ret.errno:
                     print "Error 9"
@@ -180,7 +185,7 @@ class TCPServerBase(communicationBase):
         try:
             for client, address in self.client_socket_list:
             #     try:
-            #         client.shutdown(2)
+            #     client.shutdown(2)
                 client.close()
             #     except Exception as ret:
             #         print ret
@@ -193,7 +198,7 @@ class TCPServerBase(communicationBase):
             # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
             # self.emit(QtCore.SIGNAL("signal_show_status"), "")
         except Exception as ret:
-            print ret
+            print ret.strerror.decode("gbk")
             # if self._isDebug:
             #     print ret
             pass
