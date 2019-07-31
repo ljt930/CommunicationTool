@@ -3,7 +3,7 @@
 # @Software: PyCharm
 # @Time    : 2019/5/28 11:28
 # @Author  : linjinting
-# @Site    : 
+# @Site    :
 # @Software: CommunicationTool
 # @File    : TCPServer.py
 # @Function: TCPServer
@@ -15,11 +15,13 @@ import stopThreading
 from communicationserverbase import CommunicationServerBase
 from TrasitionBase.CharactersConversion import CharactersConversion as CC
 
+
 class ClientConn():
     def __init__(self):
         self.key = ""
         self.client = None
         self.address = ()
+
 
 class TCPServerBase(CommunicationServerBase):
     def __init__(self):
@@ -34,22 +36,27 @@ class TCPServerBase(CommunicationServerBase):
         :return: None
         """
         print "TCPServer::open"
-        self.socket = self._socket.socket(self._socket.AF_INET, self._socket.SOCK_STREAM)
+        self.socket = self._socket.socket(
+            self._socket.AF_INET, self._socket.SOCK_STREAM)
         # 取消主动断开连接四次握手后的TIME_WAIT状态
-        self.socket.setsockopt(self._socket.SOL_SOCKET, self._socket.SO_REUSEADDR, 1)
+        self.socket.setsockopt(
+            self._socket.SOL_SOCKET,
+            self._socket.SO_REUSEADDR,
+            1)
         # 设定套接字为非阻塞式
         self.socket.setblocking(False)
         try:
             # port = int(self.lineEdit_port.text())
             self.socket.bind((self._ip, self._port))
         except Exception as ret:
-            msg = "监听失败，请检查端口号:%s"% (self._port)
+            msg = "监听失败，请检查端口号:%s" % (self._port)
             self.show_msg("statusmsg", msg)
             # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
             return -1
         else:
             self.socket.listen(128)
-            self.socket_th = threading.Thread(target=self.tcp_server_concurrency)
+            self.socket_th = threading.Thread(
+                target=self.tcp_server_concurrency)
             self.socket_th.start()
             msg = 'TCP服务端正在监听端口:%s' % self._port
             self.show_msg("status", msg)
@@ -71,11 +78,12 @@ class TCPServerBase(CommunicationServerBase):
                 r_list, w_list, e_list = select.select(self.inputs, [], [], )
             except Exception as ret:
                 print ret
-                self.client_socket_list= list()
+                self.client_socket_list = list()
                 break
             else:
-            # print w_list
-                for e in e_list: continue
+                # print w_list
+                for e in e_list:
+                    continue
                 for client_socket in r_list:
                     # socket, address = item
                     if client_socket == self.socket:
@@ -88,7 +96,7 @@ class TCPServerBase(CommunicationServerBase):
                         except Exception as ret:
                             print ret
                         else:
-                            self.new_data(recv_msg,client_socket)
+                            self.new_data(recv_msg, client_socket)
 
                 for client_socket in e_list:
                     address = client_socket.getsockname()
@@ -113,7 +121,7 @@ class TCPServerBase(CommunicationServerBase):
         self.show_msg("statusmsg", msg)
         self.channel_change("client")
 
-    def new_data(self,recv_msg,client_socket):
+    def new_data(self, recv_msg, client_socket):
 
         address = client_socket.getpeername()
         if recv_msg != b'':
@@ -221,7 +229,7 @@ class TCPServerBase(CommunicationServerBase):
     #     print "client:%s thread exit"%(self.client_count)
     #     self.client_count -= 1
 
-    def send(self,data,keys=()):
+    def send(self, data, keys=()):
         """
         功能函数，用于TCP服务端
         :return: None
@@ -250,13 +258,14 @@ class TCPServerBase(CommunicationServerBase):
                     else:
                         show_data = send_data
 
-                    msg = "sendto %s:%s|%s" % (client_address[0], client_address[1], show_data)
+                    msg = "sendto %s:%s|%s" % (
+                        client_address[0], client_address[1], show_data)
 
                     self.show_msg("write", msg)
                     # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
 
             except Exception as ret:
-                msg = "发送失败:%s"%(ret)
+                msg = "发送失败:%s" % (ret)
                 self.show_msg("statusmsg", msg)
                 # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
 
@@ -264,7 +273,6 @@ class TCPServerBase(CommunicationServerBase):
             msg = "未发现已连接的客户端，无法发送"
             self.show_msg("statusmsg", msg)
             # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
-
 
     def close(self):
         """
@@ -274,8 +282,8 @@ class TCPServerBase(CommunicationServerBase):
 
         try:
             for key in self.client_conns.keys():
-            #     try:
-            #     client.shutdown(2)
+                #     try:
+                #     client.shutdown(2)
                 _conn = self.getCookie(key)
                 client = _conn.client
                 client.close()
@@ -285,7 +293,7 @@ class TCPServerBase(CommunicationServerBase):
             # self.socket.shutdown(2)
             self.socket.close()
             msg = "已断开网络"
-            self.show_msg("statusmsg",msg)
+            self.show_msg("statusmsg", msg)
             self.show_msg("status")
             # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
             # self.emit(QtCore.SIGNAL("signal_show_status"), "")
@@ -307,7 +315,8 @@ class TCPServerBase(CommunicationServerBase):
     #     del self.client_socket_list
     #     print "tcp--server __del__"
 
+
 if __name__ == '__main__':
     tcps = TCPServerBase()
-    tcps.setAddress("127.0.0.1",5566)
+    tcps.setAddress("127.0.0.1", 5566)
     tcps.open()

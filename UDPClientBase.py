@@ -3,7 +3,7 @@
 # @Software: PyCharm
 # @Time    : 2019/6/5 21:19
 # @Author  : linjinting
-# @Site    : 
+# @Site    :
 # @Software: CommunicationTool
 # @File    : UDPClientBase.py
 # @Function:
@@ -15,12 +15,12 @@ import select
 from communicationbase import CommunicationBase
 from TrasitionBase.CharactersConversion import CharactersConversion as CC
 
+
 class UDPClientBase(CommunicationBase):
     def __init__(self):
         super(UDPClientBase, self).__init__()
 
         # self.open()
-
 
     def open(self):
         """
@@ -40,7 +40,7 @@ class UDPClientBase(CommunicationBase):
 
         except self._socket.error as ret:
             msg = "请检查IP，端口:%s" % ret.errno
-            self.show_msg("statusmsg",msg)
+            self.show_msg("statusmsg", msg)
             # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
             return -4
         else:
@@ -66,7 +66,8 @@ class UDPClientBase(CommunicationBase):
                 break
             else:
                 # print w_list
-                for e in e_list: continue
+                for e in e_list:
+                    continue
 
                 try:
                     recv_msg, client_address = self.socket.recvfrom(1024)
@@ -78,11 +79,11 @@ class UDPClientBase(CommunicationBase):
                     if self._isHexDisplay:
                         recv_msg = CC.encode_to_hex(recv_msg)
 
-                    msg = "from %s:%s|%s" % (client_address[0], client_address[1], recv_msg)
+                    msg = "from %s:%s|%s" % (
+                        client_address[0], client_address[1], recv_msg)
                     self.show_msg("write", msg)
 
         print "upd client revc exit"
-
 
         # while True:
         #     try:
@@ -105,8 +106,7 @@ class UDPClientBase(CommunicationBase):
         #             print e
         #             break
 
-
-    def send(self,data,cl=()):
+    def send(self, data, cl=()):
         # if self.link is False:
         #     msg = '请选择服务，并点击连接网络\n'
         #     self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
@@ -122,15 +122,15 @@ class UDPClientBase(CommunicationBase):
             if self._isHexDisplay:
                 send_data = CC.encode_to_hex(send_data)
 
-
             self.socket.sendto(send_data, self.opaddress)
-            msg = "sendto %s:%s|%s" % (self.opaddress[0], self.opaddress[1], send_data)
+            msg = "sendto %s:%s|%s" % (
+                self.opaddress[0], self.opaddress[1], send_data)
             self.show_msg("write", msg)
             # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
 
-
         except Exception as ret:
-            msg = "failed sendto %s:%s|%s" % (self.opaddress[0], self.opaddress[1], ret)
+            msg = "failed sendto %s:%s|%s" % (
+                self.opaddress[0], self.opaddress[1], ret)
             self.show_msg("statusmsg", msg)
             # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
 
@@ -153,7 +153,6 @@ class UDPClientBase(CommunicationBase):
             print ret
             pass
 
-
         try:
             stopThreading.stop_thread(self.socket_th)
         except Exception:
@@ -165,9 +164,10 @@ class UDPClientBase(CommunicationBase):
     #     del self.opaddress
     #     print "udp--client __del__"
 
+
 if __name__ == '__main__':
     c = UDPClientBase()
-    c.setopAddress("127.0.0.1",2500)
+    c.setopAddress("127.0.0.1", 2500)
     c.open()
 
     c.send("11111111111111")

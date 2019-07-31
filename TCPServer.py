@@ -3,7 +3,7 @@
 # @Software: PyCharm
 # @Time    : 2019/5/28 11:28
 # @Author  : linjinting
-# @Site    : 
+# @Site    :
 # @Software: CommunicationTool
 # @File    : TCPServer.py
 # @Function: TCPServer
@@ -12,11 +12,11 @@
 from TCPServerBase import TCPServerBase
 from PyQt4 import QtCore
 
-class TCPServer(QtCore.QThread,TCPServerBase):
-    def __init__(self):
-        super(TCPServer,self).__init__()
-        TCPServerBase.__init__(self)
 
+class TCPServer(QtCore.QThread, TCPServerBase):
+    def __init__(self):
+        super(TCPServer, self).__init__()
+        TCPServerBase.__init__(self)
 
         # self.client_socket_list = list()
         # self.socket = None
@@ -37,7 +37,7 @@ class TCPServer(QtCore.QThread,TCPServerBase):
         if type_ == "addclient":
             # print "addclient"
             self.emit(QtCore.SIGNAL("signal_addclient"))
-        if self.isStopDisplay :
+        if self.isStopDisplay:
             return
         if msg == "":
             return
@@ -51,10 +51,11 @@ class TCPServer(QtCore.QThread,TCPServerBase):
         if type_ == "write":
             self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
 
-    def setStopDisplay(self,isStopDisplay):
+    def setStopDisplay(self, isStopDisplay):
         self.isStopDisplay = isStopDisplay
+
 
 if __name__ == '__main__':
     tcps = TCPServer()
-    tcps.setAddress("127.0.0.1",5566)
+    tcps.setAddress("127.0.0.1", 5566)
     tcps.open()

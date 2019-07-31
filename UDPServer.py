@@ -3,7 +3,7 @@
 # @Software: PyCharm
 # @Time    : 2019/5/27 20:28
 # @Author  : linjinting
-# @Site    : 
+# @Site    :
 # @Software: CommunicationTool
 # @File    : UDPServer.py
 # @Function:
@@ -11,14 +11,14 @@
 from UDPServerBase import UDPServerBase
 from PyQt4 import QtCore
 
-class UDPServer(QtCore.QThread,UDPServerBase):
+
+class UDPServer(QtCore.QThread, UDPServerBase):
 
     def __init__(self):
-        super(UDPServer,self).__init__()
+        super(UDPServer, self).__init__()
         UDPServerBase.__init__(self)
 
         self.isStopDisplay = False
-
 
     def channel_change(self, type_):
         if type_ == "client":
@@ -32,7 +32,6 @@ class UDPServer(QtCore.QThread,UDPServerBase):
         :return:
         """
         # print "--TCPServer---show-msg"
-
 
         if self.isStopDisplay:
             return
@@ -54,5 +53,5 @@ class UDPServer(QtCore.QThread,UDPServerBase):
 
 if __name__ == '__main__':
     s = UDPServer()
-    s.setAddress("127.0.0.1",5566)
+    s.setAddress("127.0.0.1", 5566)
     s.open()

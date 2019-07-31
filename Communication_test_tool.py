@@ -42,7 +42,6 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
         self.initsingle()
         self.inistatusBar()
         self.initwidget()
-
         self.createSocket()
 
     def initsingle(self):

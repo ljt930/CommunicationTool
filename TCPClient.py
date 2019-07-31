@@ -3,7 +3,7 @@
 # @Software: PyCharm
 # @Time    : 2019/5/28 11:29
 # @Author  : linjinting
-# @Site    : 
+# @Site    :
 # @Software: CommunicationTool
 # @File    : TCPClient.py
 # @Function:
@@ -12,7 +12,8 @@
 from TCPClientBase import TCPClientBase
 from PyQt4 import QtCore
 
-class TCPClient(QtCore.QThread,TCPClientBase):
+
+class TCPClient(QtCore.QThread, TCPClientBase):
     def __init__(self):
         super(TCPClient, self).__init__()
         TCPClientBase.__init__(self)
@@ -47,7 +48,8 @@ class TCPClient(QtCore.QThread,TCPClientBase):
     def setStopDisplay(self, isStopDisplay):
         self.isStopDisplay = isStopDisplay
 
+
 if __name__ == '__main__':
     tcps = TCPClient()
-    tcps.setAddress("127.0.0.1",5566)
+    tcps.setAddress("127.0.0.1", 5566)
     tcps.open()

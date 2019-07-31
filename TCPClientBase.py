@@ -128,7 +128,6 @@ class TCPClientBase(CommunicationBase):
                 self.show_msg("statusmsg", msg)
                 # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
 
-
     def close(self):
         """
         功能函数，关闭网络连接的方法

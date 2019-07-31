@@ -3,7 +3,7 @@
 # @Software: PyCharm
 # @Time    : 2019/5/27 20:08
 # @Author  : linjinting
-# @Site    : 
+# @Site    :
 # @Software: CommunicationTool
 # @File    : UDPClient.py
 # @Function:
@@ -11,7 +11,8 @@
 from UDPClientBase import UDPClientBase
 from PyQt4 import QtCore
 
-class UDPClient(QtCore.QThread,UDPClientBase):
+
+class UDPClient(QtCore.QThread, UDPClientBase):
     def __init__(self):
         super(UDPClient, self).__init__()
 
@@ -50,9 +51,8 @@ class UDPClient(QtCore.QThread,UDPClientBase):
     #     del self.opaddress
     #     print "udp--client __del__"
 
+
 if __name__ == '__main__':
     c = UDPClient()
-    c.setopAddress("127.0.0.1",2500)
+    c.setopAddress("127.0.0.1", 2500)
     c.open()
-
-

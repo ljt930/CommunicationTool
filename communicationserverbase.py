@@ -3,7 +3,7 @@
 # @Software: PyCharm
 # @Time    : 2019/6/19 9:42
 # @Author  : linjinting
-# @Site    : 
+# @Site    :
 # @Software: CommunicationTool
 # @File    : communicationserverbase.py
 # @Function:
@@ -14,7 +14,7 @@ from communicationbase import CommunicationBase
 
 class CommunicationServerBase(CommunicationBase):
     def __init__(self):
-        super(CommunicationServerBase,self).__init__()
+        super(CommunicationServerBase, self).__init__()
 
         self.client_conns = dict()
         self.lock = threading.Lock()
@@ -44,5 +44,5 @@ class CommunicationServerBase(CommunicationBase):
 
 if __name__ == '__main__':
     CSB = CommunicationServerBase()
-    CSB.setCookie("ddd","123123123123123")
+    CSB.setCookie("ddd", "123123123123123")
     print CSB.getCookie("ddd")

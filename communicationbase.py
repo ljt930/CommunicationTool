@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2019/5/26 21:57
 # @Author  : Aries
-# @Site    : 
+# @Site    :
 # @File    : communicationbase.py
 # @Software: PyCharm
 import socket
@@ -16,6 +16,7 @@ TCP_SERVER_CLOSE = -1
 TCP_CLIENT_CLOSE = -2
 UDP_SERVER_CLOSE = -3
 UDP_CLIENT_CLOSE = -4
+
 
 class CommunicationBase(object):
     _socket = socket
@@ -43,8 +44,6 @@ class CommunicationBase(object):
         #
         # self._link = False
 
-
-
     def open(self):
         print "Base::open"
 
@@ -53,8 +52,6 @@ class CommunicationBase(object):
 
     def send(self, data):
         print "Base::send"
-
-
 
     def setAddress(self, ip, port):
         self._ip = ip
@@ -107,4 +104,3 @@ class CommunicationBase(object):
     # @staticmethod
     # def encode_to_hex(data):
     #     return CharactersConversion().encode_to_hex(data)
-
