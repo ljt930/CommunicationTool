@@ -11,9 +11,11 @@
 import socket
 import threading
 import stopThreading
-from communicationBase import communicationBase
+import select
+from communicationbase import CommunicationBase
+from TrasitionBase.CharactersConversion import CharactersConversion as CC
 
-class UDPClientBase(communicationBase):
+class UDPClientBase(CommunicationBase):
     def __init__(self):
         super(UDPClientBase, self).__init__()
 
@@ -28,50 +30,83 @@ class UDPClientBase(communicationBase):
         print "UDPClient::open"
 
         self.socket = self._socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.settimeout(3)
+        # self.socket.settimeout(3)
         try:
             self.opaddress = (self._opip, self._opport)
+
             if self._islocaladdress:
                 self.setAddress = (self._ip, self._port)
-                # local_port = random.randint(49152, 65535)
                 self.socket.bind(self.setAddress)
-        except Exception as ret:
-            msg = "请检查IP，端口"
+
+        except self._socket.error as ret:
+            msg = "请检查IP，端口:%s" % ret.errno
             self.show_msg("statusmsg",msg)
             # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
-            return -2
+            return -4
         else:
             msg = "UDP客户端已启动"
             self.show_msg("statusmsg", msg)
             # self.emit(QtCore.SIGNAL("signal_show_status"), msg)
             self.socket_th = threading.Thread(target=self.udp_concurrency)
             self.socket_th.start()
-            return 2
+            return 4
 
     def udp_concurrency(self):
+        """
+        用于创建一个线程持续监听UDP通信,接收UDP数据，使用select方法
+        :return:
+        """
+        inputs = [self.socket]
+
         while True:
             try:
-                recv_msg, client_addr = self.socket.recvfrom(1024)
-                if self._isHexDisplay:
-                    recv_msg = self.encode_to_hex(recv_msg)
+                r_list, w_list, e_list = select.select(inputs, [], [], )
+            except Exception as ret:
+                print ret
+                break
+            else:
+                # print w_list
+                for e in e_list: continue
 
-                msg = "from %s:%s|%s\n" % (client_addr[0], client_addr[1], recv_msg)
-                self.show_msg("write", msg)
-                # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
-            except self._socket.timeout:
-                print "timeout"
-                continue
+                try:
+                    recv_msg, client_address = self.socket.recvfrom(1024)
 
-            except Exception, e:
-                if e.errno == 10054:
-                    print 10054
-                    continue
+                except Exception as ret:
+                    print ret
+
                 else:
-                    print e
-                    break
+                    if self._isHexDisplay:
+                        recv_msg = CC.encode_to_hex(recv_msg)
+
+                    msg = "from %s:%s|%s" % (client_address[0], client_address[1], recv_msg)
+                    self.show_msg("write", msg)
+
         print "upd client revc exit"
 
-    def send(self,data):
+
+        # while True:
+        #     try:
+        #         recv_msg, client_addr = self.socket.recvfrom(1024)
+        #         if self._isHexDisplay:
+        #             recv_msg = CC.encode_to_hex(recv_msg)
+        #
+        #         msg = "from %s:%s|%s" % (client_addr[0], client_addr[1], recv_msg)
+        #         self.show_msg("write", msg)
+        #         # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
+        #     except self._socket.timeout:
+        #         print "timeout"
+        #         continue
+        #
+        #     except self._socket.error, e:
+        #         if e.errno == 10054:
+        #             print 10054
+        #             continue
+        #         else:
+        #             print e
+        #             break
+
+
+    def send(self,data,cl=()):
         # if self.link is False:
         #     msg = '请选择服务，并点击连接网络\n'
         #     self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
@@ -80,22 +115,22 @@ class UDPClientBase(communicationBase):
             if self._isHexSend:
                 # if len(data) == 1:
                 #     return
-                send_data = self.decode_to_hex(data)
+                send_data = CC.decode_to_hex(data)
             else:
                 send_data = data
 
             if self._isHexDisplay:
-                send_data = self.encode_to_hex(send_data)
+                send_data = CC.encode_to_hex(send_data)
 
 
             self.socket.sendto(send_data, self.opaddress)
-            msg = "sendto %s:%s|%s\n" % (self.opaddress[0], self.opaddress[1], send_data)
+            msg = "sendto %s:%s|%s" % (self.opaddress[0], self.opaddress[1], send_data)
             self.show_msg("write", msg)
             # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
 
 
         except Exception as ret:
-            msg = "failed sendto %s:%s|%s\n" % (self.opaddress[0], self.opaddress[1], ret)
+            msg = "failed sendto %s:%s|%s" % (self.opaddress[0], self.opaddress[1], ret)
             self.show_msg("statusmsg", msg)
             # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
 
@@ -134,3 +169,6 @@ if __name__ == '__main__':
     c = UDPClientBase()
     c.setopAddress("127.0.0.1",2500)
     c.open()
+
+    c.send("11111111111111")
+    c.close()

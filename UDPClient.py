@@ -7,15 +7,11 @@
 # @Software: CommunicationTool
 # @File    : UDPClient.py
 # @Function:
-import socket
-import struct
-import threading
-import stopThreading
-import random
-from communicationBase import communicationBase
+
+from UDPClientBase import UDPClientBase
 from PyQt4 import QtCore
 
-class UDPClient(QtCore.QThread,communicationBase):
+class UDPClient(QtCore.QThread,UDPClientBase):
     def __init__(self):
         super(UDPClient, self).__init__()
 
@@ -31,9 +27,7 @@ class UDPClient(QtCore.QThread,communicationBase):
         :return:
         """
         # print "--TCPServer---show-msg"
-        if type_ == "addclient":
-            # print "addclient"
-            self.emit(QtCore.SIGNAL("signal_addclient"))
+
         if self.isStopDisplay:
             return
         if msg == "":

@@ -8,5 +8,6 @@ from pkg_resources import load_entry_point
 import  os
 if __name__ == '__main__':
     from PyInstaller.__main__ import run
-    opts=['mainWindows.py','-w','-F','-p D:\my_python\networktest']
+    # opts=['main.py','-w','-D','-iico/tool.ico']
+    opts=['main.spec','-D']
     run(opts)

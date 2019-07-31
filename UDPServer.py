@@ -19,6 +19,11 @@ class UDPServer(QtCore.QThread,UDPServerBase):
 
         self.isStopDisplay = False
 
+
+    def channel_change(self, type_):
+        if type_ == "client":
+            self.emit(QtCore.SIGNAL("signal_client_change"))
+
     def show_msg(self, type_, msg=""):
         """
         功能函数，根据不同类型显示不同的信息内容
@@ -27,9 +32,8 @@ class UDPServer(QtCore.QThread,UDPServerBase):
         :return:
         """
         # print "--TCPServer---show-msg"
-        if type_ == "addclient":
-            # print "addclient"
-            self.emit(QtCore.SIGNAL("signal_addclient"))
+
+
         if self.isStopDisplay:
             return
         if msg == "":

@@ -11,9 +11,10 @@
 import socket
 import threading
 import stopThreading
-from communicationBase import communicationBase
+from communicationbase import CommunicationBase
+from TrasitionBase.CharactersConversion import CharactersConversion as CC
 
-class TCPClientBase(communicationBase):
+class TCPClientBase(CommunicationBase):
     def __init__(self):
         super(TCPClientBase, self).__init__()
 
@@ -77,19 +78,21 @@ class TCPClientBase(communicationBase):
             recv_msg = self.socket.recv(1024)
             if recv_msg:
                 if self._isHexDisplay:
-                    recv_data = self.encode_to_hex(recv_msg)
+                    recv_data = CC.encode_to_hex(recv_msg)
                 else:
                     recv_data = recv_msg
 
-                msg = "from %s:%s:|%s\n" %(self.opaddress[0], self.opaddress[1], recv_data)
+                msg = "from %s:%s:|%s" %(self.opaddress[0], self.opaddress[1], recv_data)
                 self.show_msg("write", msg)
                 # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
             else:
                 self.socket.close()
                 msg = "从服务器断开连接"
                 self.show_msg("statusmsg", msg)
+                self.channel_change("disconnect")
                 # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
                 break
+        print "tcp client exit"
 
     def send(self,data,cl=()):
         """
@@ -106,20 +109,20 @@ class TCPClientBase(communicationBase):
                     # if len(data) == 1:
                     #     return
                     # send_data = self.str_to_hex(data)
-                    send_data = self.decode_to_hex(data)
+                    send_data = CC.decode_to_hex(data)
                 else:
                     send_data = data
                 self.socket.send(send_data)
 
                 if self._isHexDisplay:
-                    send_data = self.encode_to_hex(send_data)
+                    send_data = CC.encode_to_hex(send_data)
 
 
-                msg = "sendto %s:%s|%s\n" % (self.opaddress[0], self.opaddress[1], send_data)
+                msg = "sendto %s:%s|%s" % (self.opaddress[0], self.opaddress[1], send_data)
                 self.show_msg("write", msg)
                 # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
 
-            except Exception as ret:
+            except self._socket.error as ret:
                 # print ret
                 msg = "发送失败:%s"%(ret.errno)
                 self.show_msg("statusmsg", msg)

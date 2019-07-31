@@ -3,7 +3,7 @@
 # @Software: PyCharm
 # @Time    : 2019/5/27 16:53
 # @Author  : linjinting
-# @Site    : 
+# @Site    :
 # @Software: CommunicationTool
 # @File    : Communication_test_tool.py
 # @Function:
@@ -12,7 +12,10 @@ import sys
 from PyQt4 import QtCore, QtGui
 from UI.UI_networkmain import Ui_MainWindow
 from TrasitionBase.CharactersConversion import CharactersConversion
-import TCPServer,TCPClient,UDPServer,UDPClient
+import TCPServer
+import TCPClient
+import UDPServer
+import UDPClient
 import threading
 import stopThreading
 
@@ -23,11 +26,12 @@ if (default_encoding != sys.getdefaultencoding()):
     reload(sys)
     sys.setdefaultencoding(default_encoding)
 
+
 class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self):
-        super(Communication_test_tool,self).__init__()
+        super(Communication_test_tool, self).__init__()
         self.setupUi(self)
-        ### ChannelStat状态 0 无连接或无监听，1监听中，2连接中，-1监听失败，-2连接失败
+        # ChannelStat状态 0 无连接或无监听，1监听中，2连接中，-1监听失败，-2连接失败
         self.ChannelStat = 0
         self.isDebug = False
         self.channel = None
@@ -62,18 +66,31 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
         # self.connect(self.comboBox_net,QtCore.SLOT("currentIndexChanged()"),self, QtCore.SLOT("combobox_change()"))
         self.comboBox_net.currentIndexChanged.connect(self.createSocket)
 
-        self.connect(self.checkBox_ishex_send, QtCore.SIGNAL('stateChanged(int)'), self.setHexSend)
-        self.connect(self.checkBox_ishex_recv, QtCore.SIGNAL('stateChanged(int)'), self.setHexRecv)
+        self.connect(
+            self.checkBox_ishex_send,
+            QtCore.SIGNAL('stateChanged(int)'),
+            self.setHexSend)
+        self.connect(
+            self.checkBox_ishex_recv,
+            QtCore.SIGNAL('stateChanged(int)'),
+            self.setHexRecv)
 
-        self.connect(self.checkBox_replysourcedata, QtCore.SIGNAL('stateChanged(int)'), self.setAutoRecv)
-        self.connect(self.checkBox_auotsend, QtCore.SIGNAL('stateChanged(int)'), self.auto_send)
+        self.connect(
+            self.checkBox_replysourcedata,
+            QtCore.SIGNAL('stateChanged(int)'),
+            self.setAutoRecv)
+        self.connect(
+            self.checkBox_auotsend,
+            QtCore.SIGNAL('stateChanged(int)'),
+            self.auto_send)
 
     def initwidget(self):
         self.pushButton_send.setEnabled(False)
         self.checkBox_auotsend.setEnabled(False)
         self.initwidget_server()
 
-        self.listWidget_clientlist.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.listWidget_clientlist.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
 
     def inistatusBar(self):
         self.label_channelstat = QtGui.QLabel()
@@ -91,8 +108,6 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
         self.checkBox_islocalport.show()
         self.pushButton_listen.hide()
         self.groupBox_CurrentConnection.hide()
-
-
 
     def createSocket(self):
         """
@@ -123,23 +138,40 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
         if self.isDebug:
             self.channel.setDebug()
 
-        self.connect(self.channel, QtCore.SIGNAL("signal_show_status"), self.show_status)
-        self.connect(self.channel, QtCore.SIGNAL("signal_show_statusmsg"), self.show_statusmsg)
-        self.connect(self.channel, QtCore.SIGNAL("signal_write_msg"), self.show_revc_msg)
+        self.connect(
+            self.channel,
+            QtCore.SIGNAL("signal_show_status"),
+            self.show_status)
+        self.connect(
+            self.channel,
+            QtCore.SIGNAL("signal_show_statusmsg"),
+            self.show_statusmsg)
+        self.connect(
+            self.channel,
+            QtCore.SIGNAL("signal_write_msg"),
+            self.show_revc_msg)
 
-        self.connect(self.channel, QtCore.SIGNAL("signal_addclient"), self.show_clientlist)
+        self.connect(
+            self.channel,
+            QtCore.SIGNAL("signal_client_change"),
+            self.show_clientlist)
+        self.connect(
+            self.channel,
+            QtCore.SIGNAL("signal_client_disconn"),
+            self.show_client_disconn)
+
+        # self.server_op()
         # self.connect(self._channel, QtCore.SIGNAL("signal_show_stat"), self.showstat)
         # self._channel.setAddress("",12345)
         # self._channel.open()
 
     @QtCore.pyqtSlot()
     def testnet(self):
-
-        if self.checkBox_auotsend.isChecked():
-            self.checkBox_auotsend.setChecked(False)
-        else:
-            self.checkBox_auotsend.setChecked(True)
-
+        pass
+        # if self.checkBox_auotsend.isChecked():
+        #     self.checkBox_auotsend.setChecked(False)
+        # else:
+        #     self.checkBox_auotsend.setChecked(True)
 
     @QtCore.pyqtSlot()
     def server_op(self):
@@ -162,7 +194,6 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
             self.setWidgetStatus_close()
             self.checkBox_auotsend.setChecked(False)
 
-
     @QtCore.pyqtSlot()
     def client_op(self):
 
@@ -174,7 +205,7 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
             if self.checkBox_islocalport.isChecked():
                 ip = CharactersConversion().QString2PyString(self.lineEdit_ip.text())
                 port = CharactersConversion().QStringToInt(self.lineEdit_port.text())
-                self.channel.setAddress(ip,port)
+                self.channel.setAddress(ip, port)
 
             self.ChannelStat = self.channel.open()
         else:
@@ -207,16 +238,15 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
 
         if self.listWidget_clientlist.selectedItems():
             for item in self.listWidget_clientlist.selectedItems():
-                client_add_str = CharactersConversion().QString2PyString(item.text())[5:]
-                client_list.append(self.client_socket_dict[client_add_str])
+                client_key = CharactersConversion().QString2PyString(item.text())
+                client_list.append(client_key)
 
-        if self.ChannelStat >0:
+        if self.ChannelStat > 0:
             if len(data) == 0:
 
                 # print self.checkBox_auotsend.isChecked()
                 return
-            self.channel.send(data,client_list)
-
+            self.channel.send(data, client_list)
 
     @QtCore.pyqtSlot()
     def select_all_client(self):
@@ -231,8 +261,9 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
 
     @QtCore.pyqtSlot()
     def stop_disaply(self):
-        if self.ChannelStat >0:
-            text = CharactersConversion().QString2PyString(self.pushButton_stopdisaply.text())
+        if self.ChannelStat > 0:
+            text = CharactersConversion().QString2PyString(
+                self.pushButton_stopdisaply.text())
             if text == "暂停显示":
                 self.channel.setStopDisplay(True)
                 self.pushButton_stopdisaply.setText(u"恢复显示")
@@ -246,35 +277,39 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
 
     def show_clientlist(self):
         self.listWidget_clientlist.clear()
-        self.client_socket_dict =dict()
+        self.client_socket_dict = dict()
         # print self.channel.client_socket_list
-        if self.channel.client_socket_list:
-            for client in self.channel.client_socket_list:
-                client_socket, address = client
-                add_str = ":".join(str(i) for i in address)
-                self.client_socket_dict[add_str] = client
-                self.listWidget_clientlist.addItem(self.channelType+add_str)
+        conns = self.channel.client_conns
 
+        if conns:
+            for key in conns.keys():
+                self.listWidget_clientlist.addItem(key)
 
-    def show_status(self,msg):
+    def show_client_disconn(self):
+        self.ChannelStat = 0
+        self.pushButton_client.setText(u"连接")
+        self.setWidgetStatus_close()
+
+    def show_status(self, msg):
         msg = msg.decode("utf-8")
         # self.inistatusBar()
 
         self.label_channelstat.setText(msg)
-        self.statusBar().showMessage(msg,5000)
+        self.statusBar().showMessage(msg, 5000)
 
-    def show_statusmsg(self,msg):
+    def show_statusmsg(self, msg):
 
         msg = msg.decode("utf-8")
-        self.statusBar().showMessage(msg,5000)
+        self.statusBar().showMessage(msg, 5000)
 
     def show_revc_msg(self, msg):
         try:
-            msg=msg.decode('utf-8')
-        except:
+            msg = msg.decode('utf-8')
+        except BaseException:
             pass
 
         self.textEdit_recv.insertPlainText(msg)
+        self.textEdit_recv.insertPlainText("\n")
         self.textEdit_recv.moveCursor(QtGui.QTextCursor.End)
 
     def auto_send(self):
@@ -283,7 +318,7 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
 
         if self.checkbox_flag:
             return
-        if self.ChannelStat >0:
+        if self.ChannelStat > 0:
             if len(data) == 0:
                 self.checkbox_flag = True
                 self.checkBox_auotsend.nextCheckState()
@@ -300,11 +335,11 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
             self.pushButton_disconn.setEnabled(True)
             return
 
-
         if self.checkBox_auotsend.isChecked():
-            time_ = CharactersConversion().QStringToFloat(self.lineEdit_interval.text())/1000
+            time_ = CharactersConversion().QStringToFloat(
+                self.lineEdit_interval.text()) / 1000
             # print('当前线程数为{}'.format(threading.activeCount()))
-            self.send_th = send_th = threading.Timer(time_,self.auto_send)
+            self.send_th = send_th = threading.Timer(time_, self.auto_send)
             send_th.start()
 
         # self.checkbox_test()
@@ -317,17 +352,15 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
             self.checkBox_auotsend.nextCheckState()
         print self.checkBox_auotsend.isChecked()
 
-
     def setAutoRecv(self):
         self.channel.setAutoRecv(self.checkBox_replysourcedata.isChecked())
 
-
-    def setHexSend(self,value):
-        #if self.checkBox_ishex_recv.isChecked():
+    def setHexSend(self, value):
+        # if self.checkBox_ishex_recv.isChecked():
         self.channel.setHexSend(self.checkBox_ishex_send.isChecked())
 
-    def setHexRecv(self,value):
-        #if self.checkBox_ishex_recv.isChecked():
+    def setHexRecv(self, value):
+        # if self.checkBox_ishex_recv.isChecked():
         self.channel.setHexDisplay(self.checkBox_ishex_recv.isChecked())
 
     def closeEvent(self, event):
@@ -335,17 +368,21 @@ class Communication_test_tool(QtGui.QMainWindow, Ui_MainWindow):
         try:
             self.channel.close()
             del self.channel
-        except:
+        except BaseException:
             pass
         try:
             stopThreading.stop_thread(self.send_th)
         except Exception:
             pass
         event.accept()
+        # sys.exit(100)
+
 
 if __name__ == '__main__':
 
     app = QtGui.QApplication(sys.argv)
     window = Communication_test_tool()
     window.show()
-    sys.exit(app.exec_())
+    app.exec_()
+
+    sys.exit(100)
