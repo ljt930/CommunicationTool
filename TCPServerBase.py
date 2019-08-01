@@ -35,7 +35,7 @@ class TCPServerBase(CommunicationServerBase):
         功能函数，TCP服务端开启的方法
         :return: None
         """
-        print "TCPServer::open"
+        print("TCPServer::open")
         self.socket = self._socket.socket(
             self._socket.AF_INET, self._socket.SOCK_STREAM)
         # 取消主动断开连接四次握手后的TIME_WAIT状态
@@ -77,7 +77,7 @@ class TCPServerBase(CommunicationServerBase):
             try:
                 r_list, w_list, e_list = select.select(self.inputs, [], [], )
             except Exception as ret:
-                print ret
+                print(ret)
                 self.client_socket_list = list()
                 break
             else:
@@ -94,7 +94,7 @@ class TCPServerBase(CommunicationServerBase):
                         try:
                             recv_msg = client_socket.recv(1024)
                         except Exception as ret:
-                            print ret
+                            print(ret)
                         else:
                             self.new_data(recv_msg, client_socket)
 
@@ -107,7 +107,7 @@ class TCPServerBase(CommunicationServerBase):
                     _key = CC.strip("[TCP]", address)
                     self.unsetCookie(_key)
                     self.channel_change("client")
-        print "tcp server exit!"
+        print("tcp server exit!")
 
     def new_client(self, client_socket, client_address):
         _conn = ClientConn()
@@ -131,7 +131,7 @@ class TCPServerBase(CommunicationServerBase):
             if self._isHexDisplay:
                 recv_data = CC.encode_to_hex(recv_msg)
             else:
-                recv_data = recv_msg
+                recv_data = recv_msg.decode("utf8","ignore")
 
             msg = "from %s:%s|%s" % (address[0], address[1], recv_data)
             self.show_msg("write", msg)
@@ -238,12 +238,13 @@ class TCPServerBase(CommunicationServerBase):
             try:
                 # send_data = (str(self.textEdit_send.toPlainText())).encode('utf-8')
                 if not keys:
-                    keys = self.client_conns.keys()
+                    keys = list(self.client_conns.keys())
 
                 if self._isHexSend:
                     send_data = CC.decode_to_hex(data)
+
                 else:
-                    send_data = data
+                    send_data = data.encode()
 
                 # 向所有连接的客户端发送消息
                 for key in keys:
@@ -256,7 +257,7 @@ class TCPServerBase(CommunicationServerBase):
                     if self._isHexDisplay:
                         show_data = CC.encode_to_hex(send_data)
                     else:
-                        show_data = send_data
+                        show_data = data
 
                     msg = "sendto %s:%s|%s" % (
                         client_address[0], client_address[1], show_data)
@@ -281,7 +282,7 @@ class TCPServerBase(CommunicationServerBase):
         """
 
         try:
-            for key in self.client_conns.keys():
+            for key in list(self.client_conns.keys()):
                 #     try:
                 #     client.shutdown(2)
                 _conn = self.getCookie(key)
@@ -298,7 +299,7 @@ class TCPServerBase(CommunicationServerBase):
             # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
             # self.emit(QtCore.SIGNAL("signal_show_status"), "")
         except Exception as ret:
-            print ret
+            print(ret)
             # if self._isDebug:
             #     print ret
             pass

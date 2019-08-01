@@ -12,7 +12,7 @@ class CharactersConversion():
     def QString2PyString(self, qStr):
         # # QString，如果内容是中文，则直接使用会有问题，要转换成 python string
         # print type(qStr)
-        return unicode(qStr.toUtf8(), 'utf-8', 'ignore')
+        return str(qStr.toUtf8(), 'utf-8', 'ignore')
 
     def QStringToInt(self, qStr):
         i_tmp = qStr.toInt()
@@ -66,7 +66,7 @@ class CharactersConversion():
         :return:
         """
         for c in data:
-            s = hex(ord(c)).replace('0x', '')
+            s = hex(c).replace('0x', '')
             if len(s) < 2:
                 s = "0" + s
             yield s
@@ -81,7 +81,7 @@ class CharactersConversion():
         # 功能有限，暂时屏蔽
         # return ''.join([chr(i) for i in [int(b, 16) for b in s.split(' ')]])
 
-        str = ""
+        str = b""
         for d in data.split(" "):
             while d:
                 if len(d) < 2:
@@ -89,7 +89,8 @@ class CharactersConversion():
                 else:
                     str_t = d[0:2]
                 s = int(str_t, 16)
-                str += struct.pack('B', s)
+                ss = struct.pack('B', s)
+                str += ss
                 d = d[2:]
         return str
 
@@ -123,12 +124,3 @@ class CharactersConversion():
 if __name__ == '__main__':
     ddd = "02020202"
 
-    cc = CharactersConversion()
-    qq = cc.decode_to_hex(ddd)
-    print qq
-    zz = cc.encode_to_hex(qq)
-    print zz
-    for c in qq:
-        oc = ord(c)
-        hc = hex(oc)
-        print hc

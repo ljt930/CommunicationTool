@@ -45,13 +45,13 @@ class CommunicationBase(object):
         # self._link = False
 
     def open(self):
-        print "Base::open"
+        print("Base::open")
 
     def close(self):
         print ("Base::close")
 
     def send(self, data):
-        print "Base::send"
+        print("Base::send")
 
     def setAddress(self, ip, port):
         self._ip = ip
@@ -69,7 +69,7 @@ class CommunicationBase(object):
 
     def setAutoRecv(self, isAutoRecv):
         self._isAutoRecv = isAutoRecv
-        print self._isAutoRecv
+        print(self._isAutoRecv)
 
     def setDebug(self):
         self._isDebug = True
@@ -81,10 +81,10 @@ class CommunicationBase(object):
            ---msg:str类型数据，默认为空
         :return:
         """
-        print "--Base---show-msg"
+        print("--Base---show-msg")
         if msg == "":
             return
-        print msg
+        print(msg)
 
     def channel_change(self, type_):
         """
@@ -93,9 +93,9 @@ class CommunicationBase(object):
            ---msg:str类型数据，默认为空
         :return:
         """
-        print "--Base---show-msg"
+        print("--Base---show-msg")
 
-        print type_
+        print(type_)
 
     # @staticmethod
     # def decode_to_hex(data):

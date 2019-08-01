@@ -110,19 +110,19 @@ try:
         # 读取数据包
         raw_buffer = sniffer.recvfrom(65565)[0]
 
-        print len(raw_buffer)
+        print(len(raw_buffer))
         # 将缓冲区的前20个字节按IP头进行解析
         ip_header = IP(raw_buffer[0:20])
 
 
         # 输出协议和通信双方IP地址
-        print "Protocol : %s %s -> %s" % (ip_header.protocol, ip_header.src_address, ip_header.dst_address)
+        print("Protocol : %s %s -> %s" % (ip_header.protocol, ip_header.src_address, ip_header.dst_address))
         data = raw_buffer[40:len(raw_buffer)]
         try:
-            print 'Data decode: ' + data.decode("utf-8")
+            print('Data decode: ' + data.decode("utf-8"))
         except:
-            print 'Data : ' + data
-        print 'Data : ' + cc.encode_to_hex(data)
+            print('Data : ' + data)
+        print('Data : ' + cc.encode_to_hex(data))
         # 处理CTRL-C
 except KeyboardInterrupt:
 

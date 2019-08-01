@@ -27,7 +27,7 @@ class UDPClientBase(CommunicationBase):
         开启UDP客户端方法
         :return:
         """
-        print "UDPClient::open"
+        print("UDPClient::open")
 
         self.socket = self._socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # self.socket.settimeout(3)
@@ -62,7 +62,7 @@ class UDPClientBase(CommunicationBase):
             try:
                 r_list, w_list, e_list = select.select(inputs, [], [], )
             except Exception as ret:
-                print ret
+                print(ret)
                 break
             else:
                 # print w_list
@@ -73,7 +73,7 @@ class UDPClientBase(CommunicationBase):
                     recv_msg, client_address = self.socket.recvfrom(1024)
 
                 except Exception as ret:
-                    print ret
+                    print(ret)
 
                 else:
                     if self._isHexDisplay:
@@ -83,7 +83,7 @@ class UDPClientBase(CommunicationBase):
                         client_address[0], client_address[1], recv_msg)
                     self.show_msg("write", msg)
 
-        print "upd client revc exit"
+        print("upd client revc exit")
 
         # while True:
         #     try:
@@ -117,10 +117,12 @@ class UDPClientBase(CommunicationBase):
                 #     return
                 send_data = CC.decode_to_hex(data)
             else:
-                send_data = data
+                send_data = data.decode("utf8","ignore")
 
             if self._isHexDisplay:
                 send_data = CC.encode_to_hex(send_data)
+            else:
+                send_data = data
 
             self.socket.sendto(send_data, self.opaddress)
             msg = "sendto %s:%s|%s" % (
@@ -150,7 +152,7 @@ class UDPClientBase(CommunicationBase):
             # self.emit(QtCore.SIGNAL("signal_show_status"), "")
         except Exception as ret:
             # if self._isDebug:
-            print ret
+            print(ret)
             pass
 
         try:

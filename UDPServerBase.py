@@ -35,14 +35,14 @@ class UDPServerBase(CommunicationServerBase):
         开启UDP服务端方法
         :return:
         """
-        print "UDPServer::open"
+        print("UDPServer::open")
         self.socket = self._socket.socket(self._socket.AF_INET, self._socket.SOCK_DGRAM)
         self.socket.settimeout(3)
         # self.socket.setsockopt()
         try:
             # port = int(self.lineEdit_port.text())
             # print self.address
-            print self._ip, self._port
+            print(self._ip, self._port)
             self.socket.bind((self._ip, self._port))
         except self._socket.error as ret:
 
@@ -70,7 +70,7 @@ class UDPServerBase(CommunicationServerBase):
         """
 
         if self.client_conns:
-            for key in self.client_conns.keys():
+            for key in list(self.client_conns.keys()):
                 _conn = self.getCookie(key)
 
                 stamp = _conn.time_stamp + datetime.timedelta(seconds=120)
@@ -91,7 +91,7 @@ class UDPServerBase(CommunicationServerBase):
             try:
                 r_list, w_list, e_list = select.select(inputs, [], [], )
             except Exception as ret:
-                print ret
+                print(ret)
                 self.client_conns = dict()
                 break
             else:
@@ -102,12 +102,12 @@ class UDPServerBase(CommunicationServerBase):
                     recv_msg, client_address = self.socket.recvfrom(1024)
 
                 except Exception as ret:
-                    print ret
+                    print(ret)
 
                 else:
                     self.new_data(recv_msg, client_address)
 
-        print "server Thread exit"
+        print("server Thread exit")
 
     def new_data(self, recv_msg, client_address):
         """
@@ -213,7 +213,7 @@ class UDPServerBase(CommunicationServerBase):
                     self.show_msg("write", msg)
                     # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
         except Exception as ret:
-            print ret
+            print(ret)
 
 
     def socket_send(self, send_data, _conn):
@@ -257,7 +257,7 @@ class UDPServerBase(CommunicationServerBase):
             # self.emit(QtCore.SIGNAL("signal_show_status"), "")
         except Exception as ret:
             if self._isDebug:
-                print ret
+                print(ret)
             pass
 
         self.checked_timer.cancel()
@@ -277,5 +277,5 @@ class UDPServerBase(CommunicationServerBase):
 
 if __name__ == '__main__':
     conn = ClientConn()
-    print conn.key
-    print conn.time_stamp
+    print(conn.key)
+    print(conn.time_stamp)

@@ -9,11 +9,14 @@
 # @Function:
 
 from UDPServerBase import UDPServerBase
-from PyQt4 import QtCore
+from PyQt5.QtCore import QObject, pyqtSignal
 
 
-class UDPServer(QtCore.QThread, UDPServerBase):
-
+class UDPServer(QObject, UDPServerBase):
+    signal_show_statusmsg = pyqtSignal(str)
+    signal_show_status = pyqtSignal(str)
+    signal_write_msg = pyqtSignal(str)
+    signal_client_change = pyqtSignal()
     def __init__(self):
         super(UDPServer, self).__init__()
         UDPServerBase.__init__(self)
@@ -22,7 +25,7 @@ class UDPServer(QtCore.QThread, UDPServerBase):
 
     def channel_change(self, type_):
         if type_ == "client":
-            self.emit(QtCore.SIGNAL("signal_client_change"))
+            self.signal_client_change.emit()
 
     def show_msg(self, type_, msg=""):
         """
@@ -39,13 +42,13 @@ class UDPServer(QtCore.QThread, UDPServerBase):
             return
         # print msg
         if type_ == "print":
-            print msg
+            print(msg)
         if type_ == "statusmsg":
-            self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
+            self.signal_show_statusmsg.emit(msg)
         if type_ == "status":
-            self.emit(QtCore.SIGNAL("signal_show_status"), msg)
+            self.signal_show_status.emit(msg)
         if type_ == "write":
-            self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
+            self.signal_write_msg.emit( msg)
 
     def setStopDisplay(self, isStopDisplay):
         self.isStopDisplay = isStopDisplay

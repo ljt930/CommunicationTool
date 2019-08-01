@@ -9,10 +9,13 @@
 # @Function:
 
 from UDPClientBase import UDPClientBase
-from PyQt4 import QtCore
+from PyQt5.QtCore import QObject, pyqtSignal
 
 
-class UDPClient(QtCore.QThread, UDPClientBase):
+class UDPClient(QObject, UDPClientBase):
+    signal_show_statusmsg = pyqtSignal(str)
+    signal_show_status = pyqtSignal(str)
+    signal_write_msg = pyqtSignal(str)
     def __init__(self):
         super(UDPClient, self).__init__()
 
@@ -29,19 +32,20 @@ class UDPClient(QtCore.QThread, UDPClientBase):
         """
         # print "--TCPServer---show-msg"
 
+
         if self.isStopDisplay:
             return
         if msg == "":
             return
         # print msg
         if type_ == "print":
-            print msg
+            print(msg)
         if type_ == "statusmsg":
-            self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
+            self.signal_show_statusmsg.emit(msg)
         if type_ == "status":
-            self.emit(QtCore.SIGNAL("signal_show_status"), msg)
+            self.signal_show_status.emit(msg)
         if type_ == "write":
-            self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
+            self.signal_write_msg.emit( msg)
 
     def setStopDisplay(self, isStopDisplay):
         self.isStopDisplay = isStopDisplay

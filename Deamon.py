@@ -27,9 +27,9 @@ class Deamon():
 
     def show(self):
         # print self.p.stdout.read()
-        print self.p.pid
+        print(self.p.pid)
         r = self.p.poll()
-        print r
+        print(r)
         return r
 if __name__ == '__main__':
     d = Deamon()

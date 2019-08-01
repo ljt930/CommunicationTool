@@ -23,7 +23,7 @@ class TCPClientBase(CommunicationBase):
         开启TCP客户端方法
         :return: 2,-2
         """
-        print "TCPClient::open-1"
+        print("TCPClient::open-1")
         self.socket = self._socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             self.opaddress = (self._opip, self._opport)
@@ -31,7 +31,7 @@ class TCPClientBase(CommunicationBase):
                 self.localAddress = (self._ip, self._port)
                 self.socket.bind(self.localAddress)
         except Exception as ret:
-            print ret
+            print(ret)
             msg = "请检查目标IP，目标端口"
             self.show_msg("statusmsg", msg)
             # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
@@ -92,7 +92,7 @@ class TCPClientBase(CommunicationBase):
                 self.channel_change("disconnect")
                 # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
                 break
-        print "tcp client exit"
+        print("tcp client exit")
 
     def send(self,data,cl=()):
         """
@@ -111,7 +111,7 @@ class TCPClientBase(CommunicationBase):
                     # send_data = self.str_to_hex(data)
                     send_data = CC.decode_to_hex(data)
                 else:
-                    send_data = data
+                    send_data = data.decode("utf8","ignore")
                 self.socket.send(send_data)
 
                 if self._isHexDisplay:
@@ -145,7 +145,7 @@ class TCPClientBase(CommunicationBase):
                 # self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
         except Exception as ret:
             if self._isDebug:
-                print ret
+                print(ret)
             pass
 
         try:

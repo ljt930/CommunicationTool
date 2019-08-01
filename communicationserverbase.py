@@ -45,4 +45,4 @@ class CommunicationServerBase(CommunicationBase):
 if __name__ == '__main__':
     CSB = CommunicationServerBase()
     CSB.setCookie("ddd", "123123123123123")
-    print CSB.getCookie("ddd")
+

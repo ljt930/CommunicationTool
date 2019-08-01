@@ -10,18 +10,25 @@
 
 
 from TCPClientBase import TCPClientBase
-from PyQt4 import QtCore
+from PyQt5.QtCore import QObject, pyqtSignal
 
 
-class TCPClient(QtCore.QThread, TCPClientBase):
+class TCPClient(QObject, TCPClientBase):
+    signal_show_statusmsg = pyqtSignal(str)
+    signal_show_status = pyqtSignal(str)
+    signal_write_msg = pyqtSignal(str)
+    signal_client_disconn = pyqtSignal()
     def __init__(self):
         super(TCPClient, self).__init__()
         TCPClientBase.__init__(self)
 
+
+
         self.isStopDisplay = False
 
     def channel_change(self, type_=""):
-        self.emit(QtCore.SIGNAL("signal_client_disconn"))
+        if type_ == "disconnect":
+            self.signal_client_disconn.emit()
 
     def show_msg(self, type_, msg=""):
         """
@@ -37,13 +44,13 @@ class TCPClient(QtCore.QThread, TCPClientBase):
             return
         # print msg
         if type_ == "print":
-            print msg
+            print(msg)
         if type_ == "statusmsg":
-            self.emit(QtCore.SIGNAL("signal_show_statusmsg"), msg)
+            self.signal_show_statusmsg.emit(msg)
         if type_ == "status":
-            self.emit(QtCore.SIGNAL("signal_show_status"), msg)
+            self.signal_show_status.emit(msg)
         if type_ == "write":
-            self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
+            self.signal_write_msg.emit( msg)
 
     def setStopDisplay(self, isStopDisplay):
         self.isStopDisplay = isStopDisplay
