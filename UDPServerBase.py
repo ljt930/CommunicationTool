@@ -133,9 +133,11 @@ class UDPServerBase(CommunicationServerBase):
         self.show_msg("statusmsg", msg)
 
         if self._isHexDisplay:
-            recv_msg = CC.encode_to_hex(recv_msg)
+            show_data = CC.encode_to_hex(recv_msg)
+        else:
+            show_data = recv_msg.decode()
 
-        msg = "from %s:%s|%s" % (client_address[0], client_address[1], recv_msg)
+        msg = "from %s:%s|%s" % (client_address[0], client_address[1], show_data)
         self.show_msg("write", msg)
 
         # udp收到信息自动回复
@@ -194,23 +196,20 @@ class UDPServerBase(CommunicationServerBase):
                 #     return
                 send_data = CC.decode_to_hex(data)
             else:
-                send_data = data
+                send_data = data.encode()
 
             if self._isHexDisplay:
-                send_data = CC.encode_to_hex(send_data)
+                show_data = CC.encode_to_hex(send_data)
+            else:
+                show_data = data
 
             for key in keys:
                 _conn = self.getCookie(key)
                 res = self.socket_send(send_data, _conn)
                 # self.address = client_addr
-                if res == 0:
-                    if self._isHexDisplay:
-                        show_data = CC.encode_to_hex(send_data)
-                    else:
-                        show_data = send_data
 
-                    msg = "sendto %s:%s|%s" % (_conn.address[0], _conn.address[1], show_data)
-                    self.show_msg("write", msg)
+                msg = "sendto %s:%s|%s" % (_conn.address[0], _conn.address[1], show_data)
+                self.show_msg("write", msg)
                     # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
         except Exception as ret:
             print(ret)

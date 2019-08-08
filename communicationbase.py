@@ -29,6 +29,7 @@ class CommunicationBase(object):
 
     _islocaladdress = False
     _link = False
+    _timeout = None
 
     def __init__(self):
 
@@ -52,7 +53,8 @@ class CommunicationBase(object):
 
     def send(self, data):
         print("Base::send")
-
+    def check_recv(self):
+        pass
     def setAddress(self, ip, port):
         self._ip = ip
         self._port = port
@@ -73,6 +75,9 @@ class CommunicationBase(object):
 
     def setDebug(self):
         self._isDebug = True
+
+    def setTimeOut(self,timeout):
+        self._timeout = timeout
 
     def show_msg(self, type_, msg=""):
         """

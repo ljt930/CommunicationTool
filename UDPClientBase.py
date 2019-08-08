@@ -19,7 +19,8 @@ from TrasitionBase.CharactersConversion import CharactersConversion as CC
 class UDPClientBase(CommunicationBase):
     def __init__(self):
         super(UDPClientBase, self).__init__()
-
+        # self.iswait = False
+        # self.istimeout = False
         # self.open()
 
     def open(self):
@@ -57,10 +58,15 @@ class UDPClientBase(CommunicationBase):
         :return:
         """
         inputs = [self.socket]
-
+        # timeout = 3
+        self.iswait = True
+        self.istimeout = False
         while True:
             try:
-                r_list, w_list, e_list = select.select(inputs, [], [], )
+                r_list, w_list, e_list = select.select(inputs, [], [],self._timeout)
+                if r_list == []:
+                    self.istimeout = True
+                    break
             except Exception as ret:
                 print(ret)
                 break
@@ -73,18 +79,21 @@ class UDPClientBase(CommunicationBase):
                     recv_msg, client_address = self.socket.recvfrom(1024)
 
                 except Exception as ret:
-                    print(ret)
+                    # print(ret)
+                    pass
 
                 else:
                     if self._isHexDisplay:
-                        recv_msg = CC.encode_to_hex(recv_msg)
+                        show_data = CC.encode_to_hex(recv_msg)
+                    else:
+                        show_data = recv_msg.decode()
 
                     msg = "from %s:%s|%s" % (
-                        client_address[0], client_address[1], recv_msg)
+                        client_address[0], client_address[1], show_data)
                     self.show_msg("write", msg)
 
         print("upd client revc exit")
-
+        self.iswait = False
         # while True:
         #     try:
         #         recv_msg, client_addr = self.socket.recvfrom(1024)
@@ -117,16 +126,17 @@ class UDPClientBase(CommunicationBase):
                 #     return
                 send_data = CC.decode_to_hex(data)
             else:
-                send_data = data.decode("utf8","ignore")
+                send_data = data.encode()
+            self.socket.sendto(send_data, self.opaddress)
 
             if self._isHexDisplay:
-                send_data = CC.encode_to_hex(send_data)
+                show_data = CC.encode_to_hex(send_data)
             else:
-                send_data = data
+                show_data = data
 
-            self.socket.sendto(send_data, self.opaddress)
+
             msg = "sendto %s:%s|%s" % (
-                self.opaddress[0], self.opaddress[1], send_data)
+                self.opaddress[0], self.opaddress[1], show_data)
             self.show_msg("write", msg)
             # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
 
@@ -166,6 +176,19 @@ class UDPClientBase(CommunicationBase):
     #     del self.opaddress
     #     print "udp--client __del__"
 
+    def check_recv(self):
+        while True:
+            if self.iswait :
+                # print("check")
+                pass
+            else:
+                break
+
+        print("check recv ok")
+        if self.istimeout:
+            return True
+        else:
+            return False
 
 if __name__ == '__main__':
     c = UDPClientBase()

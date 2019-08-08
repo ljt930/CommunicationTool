@@ -12,7 +12,7 @@ import sys
 # from PyQt4 import QtCore, QtGui
 from PyQt5 import QtWidgets,QtGui
 from UI.UI_networkmain import Ui_MainWindow
-from TrasitionBase.CharactersConversion import CharactersConversion
+# from TrasitionBase.CharactersConversion import CharactersConversion
 import TCPServer
 import TCPClient
 import UDPServer

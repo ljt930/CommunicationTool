@@ -78,11 +78,11 @@ class TCPClientBase(CommunicationBase):
             recv_msg = self.socket.recv(1024)
             if recv_msg:
                 if self._isHexDisplay:
-                    recv_data = CC.encode_to_hex(recv_msg)
+                    show_data = CC.encode_to_hex(recv_msg)
                 else:
-                    recv_data = recv_msg
+                    show_data = recv_msg.decode()
 
-                msg = "from %s:%s:|%s" %(self.opaddress[0], self.opaddress[1], recv_data)
+                msg = "from %s:%s:|%s" %(self.opaddress[0], self.opaddress[1], show_data)
                 self.show_msg("write", msg)
                 # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
             else:
@@ -115,10 +115,12 @@ class TCPClientBase(CommunicationBase):
                 self.socket.send(send_data)
 
                 if self._isHexDisplay:
-                    send_data = CC.encode_to_hex(send_data)
+                    show_data = CC.encode_to_hex(send_data)
+                else:
+                    show_data = data
 
 
-                msg = "sendto %s:%s|%s" % (self.opaddress[0], self.opaddress[1], send_data)
+                msg = "sendto %s:%s|%s" % (self.opaddress[0], self.opaddress[1], show_data)
                 self.show_msg("write", msg)
                 # self.emit(QtCore.SIGNAL("signal_write_msg"), msg)
 
