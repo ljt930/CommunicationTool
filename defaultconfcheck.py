@@ -10,7 +10,7 @@
 conf = {
   "mysql":
   {
-    "ip":"127.0.0.1",
+    "host":"127.0.0.1",
     "port":3306,
     "user":"root",
     "passwd":"123456"
@@ -18,7 +18,8 @@ conf = {
   "redis":
   {
     "host":"127.0.0.1",
-    "port":16379
+    "port":16379,
+    "password":"F912A075CBEF3BEBDF75C8DCD1F4BB2CEEE0E57B51B1CCA5D6B090D2751D7E0D501C52B8E217DB613940D8C937B05A7ABDA9F6D400F71DDEB86D0E660936919B"
   },
   "url":
   [

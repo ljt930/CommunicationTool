@@ -184,7 +184,7 @@ class UDPClientBase(CommunicationBase):
             else:
                 break
 
-        print("check recv ok")
+        # print("check recv ok")
         if self.istimeout:
             return True
         else:

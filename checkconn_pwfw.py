@@ -6,10 +6,12 @@
 # @File    : checkconn_pwfw.py
 # @Software: PyCharm
 
+
 import UDPClient,UDPClientBase
 
 class CheckConnPWFW(object):
-    def __init__(self):
+    def __init__(self,callback=None):
+        self.callbakc = callback
         pass
 
     def check_psm70server(self):
@@ -23,7 +25,7 @@ class CheckConnPWFW(object):
             udp_conn.setHexDisplay(True)
             udp_conn.setTimeOut(3)
             for i in range(3):
-                print(i)
+                # print(i)
                 udp_conn.open()
                 udp_conn.send(self.HeartData[0])
                 istimeout = udp_conn.check_recv()
@@ -32,30 +34,45 @@ class CheckConnPWFW(object):
                 else:
                     break
             udp_conn.close()
+    def check_mysql_conn(self):
+        import MySQLdb
 
+        msg = "now check mysql connect for %s:%s\n" % (self.mysqlconf['host'], self.mysqlconf['port'])
+        self.show_msg(msg)
+        try:
+            db = MySQLdb.connect(host=self.mysqlconf['host'],port=self.mysqlconf['port'],user=self.mysqlconf['user'],passwd=self.mysqlconf['passwd'])
+        except MySQLdb.Error as e:
+            msg = e.args[1] + "\n"
+        else:
+            msg = "connect success mysql for %s:%s\n"%(self.mysqlconf['host'],self.mysqlconf['port'])
+        self.show_msg(msg)
+
+    def check_redis_conn(self):
+        import redis_connection
+        RC = redis_connection.RedisConnection(self)
+        rconn = RC.get_conn(self.redisconf)
 
     def getconf(self):
         import jsonParserOper
         jpo = jsonParserOper.jsonOper()
         confdict = jpo.getjsondict("address.json")
-        if confdict:
-            self.mysqlconf = confdict["mysql"]
-            self.redisconf = confdict["redis"]
-            self.urllist = confdict["url"]
-            self.udpconf = confdict["udp"]
-            self.HeartData = confdict["HeartData"]
-        else:
-            import  defaultconfcheck
+        if confdict == 0 :
+            import defaultconfcheck
             confdict = defaultconfcheck.conf
-            self.mysqlconf = confdict["mysql"]
-            self.redisconf = confdict["redis"]
-            self.urllist = confdict["url"]
-            self.udpconf = confdict["udp"]
-            self.HeartData = confdict["HeartData"]
+
+        self.mysqlconf = confdict["mysql"]
+        self.redisconf = confdict["redis"]
+        self.urllist = confdict["url"]
+        self.udpconf = confdict["udp"]
+        self.HeartData = confdict["HeartData"]
+
+    def show_msg(self,msg):
+        print(msg)
 
 if __name__ == '__main__':
     cc = CheckConnPWFW()
     cc.getconf()
-    cc.check_psm70server()
+    cc.check_mysql_conn()
+    cc.check_redis_conn()
 
     # print(cc.HeartData)
